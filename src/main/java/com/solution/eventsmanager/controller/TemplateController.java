@@ -10,6 +10,7 @@ import com.solution.eventsmanager.representation.EventRepresentation;
 import com.solution.eventsmanager.representation.UsersEventsTemplateRepresentation;
 import com.solution.eventsmanager.service.EventService;
 import com.solution.eventsmanager.service.UserEventsTemplateService;
+import com.solution.eventsmanager.utils.HttpRequestor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -36,61 +37,51 @@ public class TemplateController {
 
     @PostMapping("")
     public void processMessage(@RequestBody String request){
-        UsersEventsTemplate usersEventsTemplate = new UsersEventsTemplate();
+        UsersEventsTemplate usersEventsTemplate = null;
 
         JsonObject jsonObject = new JsonParser().parse(request).getAsJsonObject();
-        usersEventsTemplate.setUserId(Long.valueOf(jsonObject.get("userId").getAsString()));
-        usersEventsTemplate.setEventId(Long.valueOf(jsonObject.get("eventId").getAsString()));
+        Long eventId = Long.valueOf(jsonObject.get("eventId").getAsString());
+        Long userId = Long.valueOf(jsonObject.get("userId").getAsString());
 
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
-        MediaType mediaType = MediaType.parse("application/json");
-        okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, request);
-        Request newRequest = new Request.Builder()
-                .url("http://84.201.175.97:8080/api/templates")
-                .method("POST", body)
-                .addHeader("Content-Type", "application/json")
-                .build();
-        Response response = null;
-        try {
-            response = client.newCall(newRequest).execute();
-            String bodyResponse = response.body().string();
-            usersEventsTemplate.setTemplateId(Long.valueOf(bodyResponse));
-        } catch (IOException e) {
-            e.printStackTrace();
+        usersEventsTemplate = userEventsTemplateService.getUsersEventsTemplateByEventIdAndUserId(eventId, userId);
+        if(usersEventsTemplate==null){
+            usersEventsTemplate = new UsersEventsTemplate();
+            usersEventsTemplate.setUserId(userId);
+            usersEventsTemplate.setEventId(eventId);
+
+            HttpRequestor httpRequestor = new HttpRequestor();
+
+            MediaType mediaType = MediaType.parse("application/json");
+            okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, request);
+            String responseBody = httpRequestor.sendRequest("/api/templates", body, "POST");
+
+            usersEventsTemplate.setTemplateId(Long.valueOf(responseBody));
+
+            userEventsTemplateService.createUserEventsTemplate(usersEventsTemplate);
+        } else {
+            HttpRequestor httpRequestor = new HttpRequestor();
+
+            MediaType mediaType = MediaType.parse("application/json");
+            okhttp3.RequestBody body = okhttp3.RequestBody.create(mediaType, request);
+            String responseBody = httpRequestor.sendRequest("/api/templates/"+ usersEventsTemplate.getTemplateId(),
+                    body, "PATCH");
         }
-
-        userEventsTemplateService.createUserEventsTemplate(usersEventsTemplate);
     }
 
     @GetMapping("/{eventId}/{userId}")
     public String getTemplate(@PathVariable String eventId, @PathVariable String userId){
         UsersEventsTemplate usersEventsTemplate = new UsersEventsTemplate();
 
-//        JsonObject jsonObject = new JsonParser().parse(request).getAsJsonObject();
-//        Long userId = Long.valueOf(jsonObject.get("userId").getAsString());
-//        Long eventId = Long.valueOf(jsonObject.get("eventId").getAsString());
-
         usersEventsTemplate = userEventsTemplateService
                 .getUsersEventsTemplateByEventIdAndUserId(Long.valueOf(eventId), Long.valueOf(userId));
 
         Long templateId = usersEventsTemplate.getTemplateId();
 
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
-        Request newRequest = new Request.Builder()
-                .url("http://84.201.175.97:8080/api/templates/"+templateId.toString())
-                .method("GET", null)
-                .addHeader("Content-Type", "application/json")
-                .build();
-        String result = null;
-        try {
-            Response response = client.newCall(newRequest).execute();
-            result = response.body().string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+        HttpRequestor httpRequestor = new HttpRequestor();
 
+        String responseBody = httpRequestor.sendRequest("/api/templates/"+templateId.toString(),
+                null, "GET");
+
+        return responseBody;
+    }
 }

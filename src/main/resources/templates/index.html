@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Events</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.4.1/css/all.css"
+          integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+          crossorigin="anonymous">
+</head>
+<body>
+    <div th:switch="${events}" class="container my-5">
+        <div class="col-md-10">
+            <h2 th:case="null">No Students yet!</h2>
+            <div th:case="*">
+                <table class="table table-striped table-responsive-md">
+                    <thead>
+                    <tr>
+                        <th>Событие</th>
+                        <th>Дата</th>
+                        <th>Ответственный</th>
+                        <th>Сумма</th>
+                        <th>Сдавшие</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="event : ${events}">
+                        <td th:text=${event.title}></td>
+                        <td th:text=${event.date}></td>
+                        <td th:text=${event.assignee}></td>
+                        <td th:text=${event.sum}></td>
+                        <td th:text=${event.users}></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

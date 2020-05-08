@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<User> getUser(@RequestParam String phoneNumber){
+    public ResponseEntity<User>                                                                                                                     getUser(@RequestParam String phoneNumber){
         return new ResponseEntity<>(userService.getUserByPhoneNUmber(phoneNumber), HttpStatus.OK);
     }
 

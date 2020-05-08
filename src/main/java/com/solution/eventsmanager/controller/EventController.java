@@ -26,7 +26,7 @@ public class EventController {
 
 
     @PostMapping("")
-    public void processMessage(@RequestBody EventRepresentation eventRepresentation){
+    public void createEvent(@RequestBody EventRepresentation eventRepresentation){
         Event event = new Event();
         String title = eventRepresentation.getTitle();
         if (title!=null){
@@ -44,12 +44,14 @@ public class EventController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Event>> processMessage(){
+    public ResponseEntity<List<Event>> createEvent(){
         return new ResponseEntity<>(eventService.getAllEvents(), HttpStatus.OK);
     }
 
+//ToDo: check update method
     @PostMapping("/{id}")
-    public void updateEvent(@PathVariable("id") Long id, @RequestBody EventRepresentation eventRepresentation){
+    public void updateEvent(@PathVariable("id") Long id,
+                            @RequestBody EventRepresentation eventRepresentation){
 
         Event event = eventService.getEventById(id);
 

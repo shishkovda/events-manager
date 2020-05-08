@@ -9,7 +9,6 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-//    @Column
     private Long id;
 
     @Column
