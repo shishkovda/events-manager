@@ -8,7 +8,8 @@ import okhttp3.Response;
 import java.io.IOException;
 
 public class HttpRequestor {
-    private static String host = "http://ws-12782:8080";
+//    private static String host = "http://ws-12782:8080";
+    private static String host = "84.201.175.97";
 
     public String sendRequest(String path, RequestBody body, String method){
         OkHttpClient client = new OkHttpClient().newBuilder().build();
