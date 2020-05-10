@@ -3,15 +3,12 @@ package com.solution.eventsmanager.controller;
 import com.solution.eventsmanager.entity.User;
 import com.solution.eventsmanager.representation.UserRepresentation;
 import com.solution.eventsmanager.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Attribute;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,6 +19,8 @@ public class UserController {
 
     @PostMapping("")
     public void createUser(@RequestBody UserRepresentation userRepresentation) {
+        Logger logger = LoggerFactory.getLogger(TemplateController.class);
+
         User user = new User();
         user.setCardNumber(userRepresentation.getCardNumber());
         user.setEmail(userRepresentation.getEmail());

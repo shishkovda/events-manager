@@ -39,4 +39,17 @@ public class UserRepresentation {
     public String getCardNumber() {
         return cardNumber;
     }
+
+    @Override
+    public String toString() {
+        return "UserRepresentation{" +
+                "login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                '}';
+    }
 }

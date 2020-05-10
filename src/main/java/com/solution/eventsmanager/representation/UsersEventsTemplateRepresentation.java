@@ -40,4 +40,15 @@ public class UsersEventsTemplateRepresentation {
     public void setTemplateId(String templateId) {
         this.templateId = templateId;
     }
+
+    @Override
+    public String toString() {
+        return "UsersEventsTemplateRepresentation{" +
+                "id='" + id + '\'' +
+                ", userId='" + userId + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", templateId='" + templateId + '\'' +
+                ", template=" + template +
+                '}';
+    }
 }

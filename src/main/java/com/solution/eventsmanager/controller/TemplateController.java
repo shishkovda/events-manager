@@ -15,6 +15,8 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/templates")
 public class TemplateController {
+    Logger logger = LoggerFactory.getLogger(TemplateController.class);
 
     @Autowired
     UserEventsTemplateService userEventsTemplateService;
@@ -36,7 +39,9 @@ public class TemplateController {
 
 
     @PostMapping("")
-    public void processMessage(@RequestBody String request){
+    public void createOrUpdateTemplate(@RequestBody String request){
+        logger.info("createOrUpdateTemplate(): request = " + request);
+
         UsersEventsTemplate usersEventsTemplate = null;
 
         JsonObject jsonObject = new JsonParser().parse(request).getAsJsonObject();
@@ -70,6 +75,9 @@ public class TemplateController {
 
     @GetMapping("/{eventId}/{userId}")
     public String getTemplate(@PathVariable String eventId, @PathVariable String userId){
+        logger.info("getTemplate(): eventId = " + eventId);
+        logger.info("getTemplate(): userId = " + userId);
+
         UsersEventsTemplate usersEventsTemplate = new UsersEventsTemplate();
 
         usersEventsTemplate = userEventsTemplateService
@@ -81,6 +89,8 @@ public class TemplateController {
 
         String responseBody = httpRequestor.sendRequest("/api/templates/"+templateId.toString(),
                 null, "GET");
+
+        logger.info("getTemplate(): responseBody = " + responseBody);
 
         return responseBody;
     }

@@ -18,4 +18,13 @@ public class EventRepresentation {
     public String getAssignee() {
         return assignee;
     }
+
+    @Override
+    public String toString() {
+        return "EventRepresentation{" +
+                "title='" + title + '\'' +
+                ", date='" + date + '\'' +
+                ", assignee='" + assignee + '\'' +
+                '}';
+    }
 }

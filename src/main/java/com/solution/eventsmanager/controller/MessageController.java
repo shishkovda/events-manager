@@ -10,15 +10,17 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/messages")
 public class MessageController {
+    Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @Autowired
     UserEventsTemplateService userEventsTemplateService;
@@ -29,6 +31,8 @@ public class MessageController {
 
     @PostMapping("")
     public void processMessage(@RequestBody String request){
+        logger.info("processMessage(): request= = " + request);
+
         JsonObject jsonObject = new JsonParser().parse(request).getAsJsonObject();
         Long userId = Long.valueOf(jsonObject.get("userId").getAsString());
         Long eventId = Long.valueOf(jsonObject.get("eventId").getAsString());
@@ -47,6 +51,9 @@ public class MessageController {
 
     @GetMapping("/{eventId}/{userId}")
     public String getTemplate(@PathVariable String eventId, @PathVariable String userId){
+        logger.info("getTemplate(): eventId = " + eventId);
+        logger.info("getTemplate(): userId = " + userId);
+
         UsersEventsTemplate usersEventsTemplate = new UsersEventsTemplate();
 
         usersEventsTemplate = userEventsTemplateService
@@ -60,6 +67,8 @@ public class MessageController {
                 null, "GET");
 
         String result = responseBody;
+
+        logger.info("getTemplate(): result = " + result);
 
         return result;
     }

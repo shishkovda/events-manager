@@ -20,4 +20,11 @@ public class AttributeRepresentation {
         this.position = position;
     }
 
+    @Override
+    public String toString() {
+        return "AttributeRepresentation{" +
+                "name='" + name + '\'' +
+                ", position=" + position +
+                '}';
+    }
 }

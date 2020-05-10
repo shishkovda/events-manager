@@ -41,4 +41,13 @@ public class TemplateRepresentation {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "TemplateRepresentation{" +
+                "requestor='" + requestor + '\'' +
+                ", name='" + name + '\'' +
+                ", attributes=" + attributes +
+                ", template='" + template + '\'' +
+                '}';
+    }
 }
