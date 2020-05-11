@@ -1,13 +1,12 @@
 package com.solution.eventsmanager.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.solution.eventsmanager.entity.Event;
 import com.solution.eventsmanager.representation.EventRepresentation;
 import com.solution.eventsmanager.service.EventService;
 
-import com.solution.eventsmanager.utils.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,7 @@ import java.util.*;
 @RequestMapping("/api/events")
 public class EventController {
 
-    Logger logger = new Logger();
+    Logger logger = LoggerFactory.getLogger(EventController.class);
 
     @Autowired
     EventService eventService;
