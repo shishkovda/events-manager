@@ -44,6 +44,7 @@ public class MainWebController {
 
         for(Event event:events){
             EventView eventView = new EventView();
+            eventView.setId(event.getId().toString());
             eventView.setTitle(event.getTitle());
             eventView.setDate(event.getDate());
             User user = userService.getUSerById(event.getAssignee());
