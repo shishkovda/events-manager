@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users")
 public class UserController {
 
+    Logger logger = LoggerFactory.getLogger(TemplateController.class);
+
     @Autowired
     UserService userService;
 
     @PostMapping("")
     public void createUser(@RequestBody UserRepresentation userRepresentation) {
-        Logger logger = LoggerFactory.getLogger(TemplateController.class);
+        logger.info("createUser(): userRepresentation = " + userRepresentation.toString());
 
         User user = new User();
         user.setCardNumber(userRepresentation.getCardNumber());
@@ -33,8 +35,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<User>                                                                                                                     getUser(@RequestParam String phoneNumber){
-        return new ResponseEntity<>(userService.getUserByPhoneNUmber(phoneNumber), HttpStatus.OK);
+    public ResponseEntity<User> getUser(@RequestParam String phoneNumber){
+        logger.info("getUser(): phoneNumber = " + phoneNumber);
+
+        User user = userService.getUserByPhoneNUmber(phoneNumber);
+        logger.info("getUser(): user = " + user.toString());
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
