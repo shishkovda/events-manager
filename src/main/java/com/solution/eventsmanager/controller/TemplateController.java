@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.solution.eventsmanager.entity.Event;
+import com.solution.eventsmanager.entity.Template;
+import com.solution.eventsmanager.entity.User;
 import com.solution.eventsmanager.entity.UsersEventsTemplate;
 import com.solution.eventsmanager.representation.EventRepresentation;
 import com.solution.eventsmanager.representation.UsersEventsTemplateRepresentation;
@@ -74,7 +76,7 @@ public class TemplateController {
     }
 
     @GetMapping("/{eventId}/{userId}")
-    public String getTemplate(@PathVariable String eventId, @PathVariable String userId){
+    public ResponseEntity<Template> getTemplate(@PathVariable String eventId, @PathVariable String userId){
         logger.info("getTemplate(): eventId = " + eventId);
         logger.info("getTemplate(): userId = " + userId);
 
@@ -83,6 +85,10 @@ public class TemplateController {
         usersEventsTemplate = userEventsTemplateService
                 .getUsersEventsTemplateByEventIdAndUserId(Long.valueOf(eventId), Long.valueOf(userId));
 
+        if(usersEventsTemplate==null){
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+
         Long templateId = usersEventsTemplate.getTemplateId();
 
         HttpRequestor httpRequestor = new HttpRequestor();
@@ -90,8 +96,15 @@ public class TemplateController {
         String responseBody = httpRequestor.sendRequest("/api/templates/"+templateId.toString(),
                 null, "GET");
 
+        Template template = new Template();
+
+        JsonObject jsonObject = new JsonParser().parse(responseBody).getAsJsonObject();
+
+        template.setRequestor(jsonObject.get("requestor").getAsString());
+        template.setTemplate(jsonObject.get("template").getAsString());
+
         logger.info("getTemplate(): responseBody = " + responseBody);
 
-        return responseBody;
+        return new ResponseEntity<>(template, HttpStatus.OK);
     }
 }
