@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +20,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("")
     public void createUser(@RequestBody UserRepresentation userRepresentation) {
         logger.info("createUser(): userRepresentation = " + userRepresentation.toString());
@@ -29,7 +33,7 @@ public class UserController {
         user.setFirstName(userRepresentation.getFirstName());
         user.setLastName(userRepresentation.getLastName());
         user.setLogin(userRepresentation.getLogin());
-        user.setPassword(userRepresentation.getPassword());
+        user.setPassword(passwordEncoder.encode(userRepresentation.getPassword()));
         user.setPhoneNumber(userRepresentation.getPhoneNumber());
         userService.createUser(user);
     }

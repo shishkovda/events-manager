@@ -8,4 +8,5 @@ public interface UserService {
     User createUser(User user);
     User getUserByPhoneNUmber(String phoneNumber);
     User getUSerById(Long id);
+    User getUserByLogin(String login);
 }

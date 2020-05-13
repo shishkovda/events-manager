@@ -2,7 +2,6 @@ package com.solution.eventsmanager.controller.web;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.solution.eventsmanager.entity.Event;
 import com.solution.eventsmanager.entity.EventView;
@@ -12,16 +11,13 @@ import com.solution.eventsmanager.service.EventService;
 import com.solution.eventsmanager.service.UserEventsTemplateService;
 import com.solution.eventsmanager.service.UserService;
 import com.solution.eventsmanager.utils.HttpRequestor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +38,13 @@ public class MainWebController {
         List<Event> events = eventService.getAllEvents();
         List<EventView> eventViews = new ArrayList<>();
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.getUserByLogin(auth.getName());
+
         for(Event event:events){
+            if(event.getTitle().contains(currentUser.getLastName())){
+                continue;
+            }
             EventView eventView = new EventView();
             eventView.setId(event.getId().toString());
             eventView.setTitle(event.getTitle());
@@ -82,6 +84,11 @@ public class MainWebController {
         }
         model.addAttribute("events", eventViews);
         return "index";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 
 }
