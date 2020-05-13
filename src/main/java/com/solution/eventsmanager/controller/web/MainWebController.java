@@ -74,7 +74,7 @@ public class MainWebController {
                     lastNames.add(trade.get(i).getAsString());
                 }
 
-                eventView.setUsers(lastNames.toString().replace("[", "").replace("]", ""));
+                eventView.setUsers(lastNames.toString().replace("[", "").replace("]", "").replaceAll("%20", " "));
                 eventView.setSum(Integer.toString(lastNames.size()*300));
             }
 
