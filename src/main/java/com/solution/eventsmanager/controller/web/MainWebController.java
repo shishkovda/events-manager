@@ -114,5 +114,8 @@ public class MainWebController {
         return "profile";
     }
 
-
+    @GetMapping("/about")
+    public String about() {
+        return "about";
+    }
 }
