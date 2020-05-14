@@ -15,6 +15,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
     public User getUserByPhoneNUmber(String phoneNumber) {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         return userRepository.findByPhoneNumber(phoneNumber);

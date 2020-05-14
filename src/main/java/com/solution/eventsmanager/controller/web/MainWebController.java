@@ -14,9 +14,10 @@ import com.solution.eventsmanager.utils.HttpRequestor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,9 @@ public class MainWebController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     UserEventsTemplateService userEventsTemplateService;
@@ -90,5 +94,25 @@ public class MainWebController {
     public String login() {
         return "login";
     }
+
+    @GetMapping("/profile")
+    public String profile(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userService.getUserByLogin(username);
+        model.addAttribute("user", user);
+        return "profile";
+    }
+
+    @PostMapping("/profile")
+    public String updatProfile(@ModelAttribute User user, Model model) {
+        User userfromDB = userService.getUserByLogin(user.getLogin());
+
+        userfromDB.setPassword(passwordEncoder.encode(user.getPassword()));
+        userService.updateUser(userfromDB);
+        model.addAttribute("user", user);
+        return "profile";
+    }
+
 
 }

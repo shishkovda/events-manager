@@ -23,22 +23,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-
-//    @Autowired
-//    private AccessDeniedHandler accessDeniedHandler;
-
-    // роль admin всегда есть доступ к /admin/**
-    // роль user всегда есть доступ к /user/**
-    // Наш кастомный "403 access denied" обработчик
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/index", "/about", "/api/**").permitAll()
-                .antMatchers("/admin/**").hasAnyRole("ADMIN")
-                .antMatchers("/user/**").hasAnyRole("USER")
-                .anyRequest().authenticated()
+                .antMatchers("/css/main.css").permitAll()
+                .antMatchers("/", "/index", "/profile", "/api/**").hasAnyRole("USER")
+//                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")

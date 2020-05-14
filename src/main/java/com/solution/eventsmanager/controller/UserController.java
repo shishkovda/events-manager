@@ -38,6 +38,22 @@ public class UserController {
         userService.createUser(user);
     }
 
+    @PatchMapping("")
+    public void updateUser(@RequestBody UserRepresentation userRepresentation) {
+        logger.info("updateUser(): userRepresentation = " + userRepresentation.toString());
+
+        User user = userService.getUserByLogin(userRepresentation.getLogin());
+
+        user.setCardNumber(userRepresentation.getCardNumber());
+        user.setEmail(userRepresentation.getEmail());
+        user.setFirstName(userRepresentation.getFirstName());
+        user.setLastName(userRepresentation.getLastName());
+        user.setLogin(userRepresentation.getLogin());
+        user.setPassword(passwordEncoder.encode(userRepresentation.getPassword()));
+        user.setPhoneNumber(userRepresentation.getPhoneNumber());
+        userService.updateUser(user);
+    }
+
     @GetMapping
     public ResponseEntity<User> getUser(@RequestParam String phoneNumber){
         logger.info("getUser(): phoneNumber = " + phoneNumber);
