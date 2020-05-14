@@ -5,9 +5,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.solution.eventsmanager.entity.Alias;
 import com.solution.eventsmanager.entity.Event;
 import com.solution.eventsmanager.entity.User;
 import com.solution.eventsmanager.entity.UsersEventsTemplate;
+import com.solution.eventsmanager.repository.AliasRepository;
 import com.solution.eventsmanager.service.EventService;
 import com.solution.eventsmanager.service.UserEventsTemplateService;
 import com.solution.eventsmanager.service.UserService;
@@ -28,12 +30,6 @@ import java.util.*;
 public class MessageController {
     Logger logger = LoggerFactory.getLogger(EventController.class);
 
-    private static final Map<String, String> aliases;
-    static {
-        Map<String, String> aMap = new HashMap<>();
-        aMap.put("Дмитрий Ш.", "Шишков");
-        aliases = Collections.unmodifiableMap(aMap);
-    }
     @Autowired
     UserEventsTemplateService userEventsTemplateService;
 
@@ -44,8 +40,27 @@ public class MessageController {
     UserService userService;
 
     @Autowired
+    AliasRepository aliasRepository;
+
+    @Autowired
     ObjectMapper objectMapper;
 
+    private static Map<String, String> aliases = null;
+
+    public void populateAliases(){
+        List<Alias> aliasesList = aliasRepository.findAll();
+        for(Alias alias:aliasesList){
+            aliases.put(alias.getAlias().toUpperCase(), alias.getLastName());
+        }
+    }
+
+    public Map<String, String> getAliases(){
+        if (aliases == null){
+            aliases = new HashMap<>();
+            populateAliases();
+        }
+        return aliases;
+    }
 
     @PostMapping("")
     public void processMessage(@RequestBody String request){
@@ -84,8 +99,14 @@ public class MessageController {
 
         for(Event event:events){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = aliases.get(alias);
-            if(username !=null && event.getTitle().contains(username)){
+            Map<String, String> aliases = getAliases();
+            String lastName = aliases.get(alias.toUpperCase());
+
+            if(lastName == null){
+                break;
+            }
+
+            if(event.getTitle().contains(lastName)){
                 continue;
             }
 
@@ -117,7 +138,7 @@ public class MessageController {
                     if(sum<300){
                         break;
                     }
-                    message = message + "Сообщение: " + alias.replaceAll(" ", "%20") + " " + event.getId();
+                    message = message + "Сообщение: " + lastName/*alias.replaceAll(" ", "%20")*/ + " " + event.getId();
                     sum-=300;
                     jsonObject.remove("message");
                     jsonObject.addProperty("message", message);
