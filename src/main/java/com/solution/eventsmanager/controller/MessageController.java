@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.solution.eventsmanager.entity.Event;
-import com.solution.eventsmanager.entity.EventView;
 import com.solution.eventsmanager.entity.User;
 import com.solution.eventsmanager.entity.UsersEventsTemplate;
 import com.solution.eventsmanager.service.EventService;
@@ -15,9 +14,6 @@ import com.solution.eventsmanager.service.UserService;
 import com.solution.eventsmanager.utils.HttpRequestor;
 import com.solution.eventsmanager.utils.ParserImpl;
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +21,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/messages")
 public class MessageController {
     Logger logger = LoggerFactory.getLogger(EventController.class);
 
+    private static final Map<String, String> aliases;
+    static {
+        Map<String, String> aMap = new HashMap<>();
+        aMap.put("Дмитрий Ш.", "Шишков");
+        aliases = Collections.unmodifiableMap(aMap);
+    }
     @Autowired
     UserEventsTemplateService userEventsTemplateService;
 
@@ -78,14 +78,14 @@ public class MessageController {
 
         ParserImpl parser = new ParserImpl();
         Integer sum = Integer.valueOf(parser.parse(message).get(0));
-        String username = parser.parse(message).get(1);
+        String alias = parser.parse(message).get(1);
 
         List<Event> events = eventService.getAllEvents();
 
         for(Event event:events){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            User currentUser = userService.getUserByLogin(auth.getName());
-            if(event.getTitle().contains(currentUser.getLastName())){
+            String username = aliases.get(alias);
+            if(username !=null && event.getTitle().contains(username)){
                 continue;
             }
 
@@ -113,11 +113,11 @@ public class MessageController {
                     lastNames.add(trade.get(i).getAsString());
                 }
 
-                if(!lastNames.contains(username.replaceAll(" ", "%20"))){
+                if(!lastNames.contains(alias.replaceAll(" ", "%20"))){
                     if(sum<300){
                         break;
                     }
-                    message = message + "Сообщение: " + username.replaceAll(" ", "%20") + " " + event.getId();
+                    message = message + "Сообщение: " + alias.replaceAll(" ", "%20") + " " + event.getId();
                     sum-=300;
                     jsonObject.remove("message");
                     jsonObject.addProperty("message", message);
