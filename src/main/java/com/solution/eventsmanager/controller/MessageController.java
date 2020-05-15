@@ -28,7 +28,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/messages")
 public class MessageController {
-    Logger logger = LoggerFactory.getLogger(EventController.class);
+    Logger logger = LoggerFactory.getLogger(MessageController.class);
 
     @Autowired
     UserEventsTemplateService userEventsTemplateService;
@@ -98,7 +98,6 @@ public class MessageController {
         List<Event> events = eventService.getAllEvents();
 
         for(Event event:events){
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Map<String, String> aliases = getAliases();
             String lastName = aliases.get(alias.toUpperCase());
 
