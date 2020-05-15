@@ -55,7 +55,7 @@ public class MainWebController {
             eventView.setDate(event.getDate());
             User user = userService.getUSerById(event.getAssignee());
             if(user!=null){
-                eventView.setAssignee(user.getFirstName() + " " + user.getLastName());
+                eventView.setAssignee(user.getFirstName() + " " + user.getLastName() + "\n\t" + user.getPhoneNumber());
             }
 
             UsersEventsTemplate usersEventsTemplate = userEventsTemplateService.

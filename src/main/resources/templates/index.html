@@ -24,7 +24,6 @@
                 <table class="table table-striped table-responsive-md">
                     <thead>
                     <tr>
-                        <th>Id</th>
                         <th>Событие</th>
                         <th>Дата</th>
                         <th>Ответственный</th>
@@ -34,10 +33,9 @@
                     </thead>
                     <tbody>
                     <tr th:each="event : ${events}">
-                        <td th:text=${event.id}></td>
                         <td th:text=${event.title}></td>
                         <td th:text=${event.date}></td>
-                        <td th:text=${event.assignee}></td>
+                        <td th:width="150" th:text=${event.assignee}></td>
                         <td th:text=${event.sum}></td>
                         <td th:text=${event.users}></td>
                     </tr>
