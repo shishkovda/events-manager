@@ -134,7 +134,7 @@ public class MessageController {
                     lastNames.add(trade.get(i).getAsString());
                 }
 
-                if(!lastNames.contains(alias.replaceAll(" ", "%20"))){
+                if(!lastNames.contains(lastName)){
                     if(sum<300){
                         break;
                     }
